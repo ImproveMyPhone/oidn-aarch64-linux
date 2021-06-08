@@ -168,7 +168,7 @@ namespace oidn {
     dnnl_set_verbose(clamp(verbose - 2, 0, 2)); // unfortunately this is not per-device but global
     dnnlEngine = dnnl::engine(dnnl::engine::kind::cpu, 0);
     dnnlStream = dnnl::stream(dnnlEngine);
-    tensorBlockSize = x64::mayiuse(x64::avx512_core) ? 16 : 8;
+    tensorBlockSize = 8;
   #else
     tensorBlockSize = 1;
   #endif

@@ -48,7 +48,7 @@ namespace oidn {
 
     // Parameters
     int numThreads = 0; // autodetect by default
-    bool setAffinity = true;
+    bool setAffinity = false;
 
     bool dirty = true;
 

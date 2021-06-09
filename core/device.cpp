@@ -11,10 +11,6 @@ namespace oidn {
 
   Device::Device()
   {
-  #if defined(OIDN_X64)
-    if (!x64::mayiuse(x64::sse41))
-      throw Exception(Error::UnsupportedHardware, "SSE4.1 support is required at minimum");
-  #endif
 
     // Get default values from environment variables
     if (getEnvVar("OIDN_VERBOSE", verbose))
@@ -230,11 +226,7 @@ namespace oidn {
     std::cout << "  Platform: " << getPlatformName() << std::endl;
 
     std::cout << "  Targets :";
-  #if defined(OIDN_X64)
-    if (x64::mayiuse(x64::sse41))       std::cout << " SSE4.1";
-    if (x64::mayiuse(x64::avx2))        std::cout << " AVX2";
-    if (x64::mayiuse(x64::avx512_core)) std::cout << " AVX512";
-  #elif defined(OIDN_ARM64)
+  #if defined(OIDN_ARM64)
     std::cout << " NEON";
   #endif
     std::cout << " (supported)" << std::endl;

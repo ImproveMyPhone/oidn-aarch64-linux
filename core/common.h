@@ -14,7 +14,6 @@
   #include "mkl-dnn/include/dnnl.hpp"
   #include "mkl-dnn/include/dnnl_debug.h"
   #include "mkl-dnn/src/common/dnnl_thread.hpp"
-  #include "mkl-dnn/src/cpu/x64/cpu_isa_traits.hpp"
 #elif defined(OIDN_BNNS)
   #include <Accelerate/Accelerate.h>
 #endif
@@ -24,7 +23,6 @@
 namespace oidn {
 
 #if defined(OIDN_DNNL)
-  namespace x64 = dnnl::impl::cpu::x64;
   using dnnl::impl::parallel_nd;
 #else
   template <typename T0, typename F>

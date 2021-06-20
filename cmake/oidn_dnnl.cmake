@@ -1,9 +1,9 @@
 ## Copyright 2009-2021 Intel Corporation
 ## SPDX-License-Identifier: Apache-2.0
 
-set(DNNL_VERSION_MAJOR 1)
-set(DNNL_VERSION_MINOR 6)
-set(DNNL_VERSION_PATCH 2)
+set(DNNL_VERSION_MAJOR 2)
+set(DNNL_VERSION_MINOR 3)
+set(DNNL_VERSION_PATCH 0)
 set(DNNL_VERSION_HASH  "N/A")
 
 set(DNNL_CPU_RUNTIME "TBB")
@@ -11,12 +11,12 @@ set(DNNL_CPU_THREADING_RUNTIME "TBB")
 set(DNNL_GPU_RUNTIME "NONE")
 
 configure_file(
-  "${PROJECT_SOURCE_DIR}/mkl-dnn/include/dnnl_config.h"
-  "${PROJECT_BINARY_DIR}/mkl-dnn/include/dnnl_config.h"
+  "${PROJECT_SOURCE_DIR}/mkl-dnn/include/oneapi/dnnl/dnnl_config.h.in"
+  "${PROJECT_BINARY_DIR}/mkl-dnn/include/oneapi/dnnl/dnnl_config.h"
 )
 configure_file(
-  "${PROJECT_SOURCE_DIR}/mkl-dnn/include/dnnl_version.h"
-  "${PROJECT_BINARY_DIR}/mkl-dnn/include/dnnl_version.h"
+  "${PROJECT_SOURCE_DIR}/mkl-dnn/include/oneapi/dnnl/dnnl_version.h.in"
+  "${PROJECT_BINARY_DIR}/mkl-dnn/include/oneapi/dnnl/dnnl_version.h"
 )
 
 file(GLOB_RECURSE DNNL_SOURCES

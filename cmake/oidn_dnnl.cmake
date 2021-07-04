@@ -1,5 +1,8 @@
 ## Copyright 2009-2021 Intel Corporation
 ## SPDX-License-Identifier: Apache-2.0
+## This file is modified, see
+## https://github.com/ImproveMyPhone/oidn-aarch64-linux
+## for more details.
 
 set(DNNL_VERSION_MAJOR 2)
 set(DNNL_VERSION_MINOR 3)

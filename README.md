@@ -1,3 +1,152 @@
+# oidn-aarch64-linux
+
+This project aims to ensure the compatibility of OpenImageDenoise on AArch64 Linux.
+
+Status: Compiles and runs (v1.4.0)
+
+## Working applications:
+
+- Blender
+
+OIDN is disabled in the UI by default if not on Mac nor using a SSE4.1-capable CPU. Make modifications of like kind: https://github.com/ImproveMyPhone/blender-modified/commit/0b089626098e7db79c3fb9edb11c8ad3ea621202
+
+Also try embree-aarch64.
+
+- oidnDenoise
+
+- oidnBenchmark
+
+Applications to be tested further:
+
+- LuxCoreRender
+
+- oidnTest (takes a while, so far no failures unless CTRL+Ced)
+
+- Applications on Android(Bionic+seccomp)
+
+----------
+
+## How to compile? Obtain the following:
+
+- Everything else
+
+In a Debian-like distro, use:
+
+```
+apt install gcc g++ clang libclang-dev llvm-dev git git-lfs cmake make m4 bison flex zlib1g-dev libc6-dev-armhf-cross
+```
+
+- ISPC
+
+```
+git clone --depth 1 -b main --single-branch https://github.com/ispc/ispc.git
+cd ispc
+mkdir b
+cd b
+cmake -DISPC_NO_DUMPS=ON ..
+make -j4 install
+```
+
+- TBB
+
+The version `2020_U2` is recommended until further notice. It ensures compatibility with libraries such as OpenVDB.
+
+Extract its source and run make.
+
+There is no make install, copy results by
+
+```
+cp ./build/linux_aarch64*/*so* /usr/local/lib
+cp -r ./include/* /usr/local/include
+```
+
+or like kind.
+
+What's left is TBBConfig.cmake. For now, there's this alternative:
+
+
+```
+git clone --depth 1 -b master --single-branch https://github.com/wjakob/tbb.git
+cd tbb
+mkdir b
+cd b
+cmake ..
+make -j4 install
+```
+
+- DNNL and OIDN
+
+```
+git lfs install
+git-lfs clone --depth 1 -b master --single-branch https://github.com/ImproveMyPhone/oidn-aarch64-linux.git --shallow-submodules --recursive
+cd oidn-aarch64-linux
+mkdir b
+cd b
+cmake ..
+make -j2 install
+```
+
+----------
+
+## OpenImageDenoise for AArch64 Linux is made.
+
+`--depth 1` and `--shallow-submodules` downloads only the latest version (saves data and disk space), if you intend to download older versions as well, remove these.
+
+Specify `-DCMAKE_BUILD_TYPE=Release`, not Debug, unless you have TBB as Debug. https://github.com/oneapi-src/oneTBB/issues/207
+
+`-DISPC_NO_DUMPS=ON` is required unless LLVM is built in a certain way.
+
+Though `-j2` runs on only 2 CPU cores, it is not memory intensive. Compiling may require more than 6GB RAM with `-j8`.
+
+----------
+
+## Potential issues:
+
+- Segfault
+
+May be solved by updating GCC, `-fno-lifetime-dse`, or use of Clang.
+
+- Results in a black image
+
+Check compiler flags and gcc version.
+
+- 100% usage in only CPU Core 0 and other cores are inactive
+
+Deactivate affinity, additionally `taskset -c` does not work here. Use:
+
+`OIDN_SET_AFFINITY=0 yourapplication`
+
+or
+
+`export OIDN_SET_AFFINITY=0; yourapplication`
+
+- Available CPU cores may potentially be underestimated during cores being hotplugged.
+
+Specify threads manually with:
+
+`OIDN_NUM_THREADS=8 yourapplication`
+
+- SIGILL
+
+`DNNL_MAX_CPU_ISA=ADVANCED_SIMD yourapplication`
+
+or
+
+You must use at least an ARMv8.0 CPU and a 64 bit OS
+
+- ISPC does not work!
+
+```
+git clone --depth 1 -b v1.16.0 --single-branch https://github.com/ispc/ispc.git
+```
+
+- git-lfs clone failed due to submodules
+
+Raise or omit `--depth` or `--shallow-submodules`
+
+----------
+
+
 # Intel® Open Image Denoise
 
 This is release v1.4.0 of Intel Open Image Denoise. For changes and new

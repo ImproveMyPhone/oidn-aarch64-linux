@@ -1,30 +1,36 @@
 # oidn-aarch64-linux
 
-This project aims to ensure the compatibility of OpenImageDenoise on AArch64 Linux.
+This project aims to unofficially provide the ability to run OIDN on Linux with glibc or bionic and AArch64(ARM64)
+
+Modified by ImproveMyPhone
 
 Status: Compiles and runs (v1.4.0)
 
-## Working applications:
+For x86, install the official software instead.
 
-- Blender
+## Working:
 
-OIDN is disabled in the UI by default if not on Mac nor using a SSE4.1-capable CPU. Make modifications of like kind: https://github.com/ImproveMyPhone/blender-modified/commit/0b089626098e7db79c3fb9edb11c8ad3ea621202
+- Blender (including tests)
 
-Also try embree-aarch64.
+This denoiser is automatically disabled if not on Mac nor using a SSE4.1-capable CPU. Enable it in:
+
+intern/cycles/util/util\_openimagedenoise.h
+
+source/blender/compositor/operations/COM\_DenoiseOperation.cc
+
+source/blender/editors/space\_node/drawnode.cc
 
 - oidnDenoise
 
 - oidnBenchmark
 
-Applications to be tested further:
+- Android(bionic+seccomp) support
+
+## To be tested further:
 
 - LuxCoreRender
 
 - oidnTest (takes a while, so far no failures unless CTRL+Ced)
-
-- Applications on Android(Bionic+seccomp)
-
-----------
 
 ## How to compile? Obtain the following:
 
@@ -33,72 +39,105 @@ Applications to be tested further:
 In a Debian-like distro, use:
 
 ```
-apt install gcc g++ clang libclang-dev llvm-dev git git-lfs cmake make m4 bison flex zlib1g-dev libc6-dev-armhf-cross
+apt install gcc g++ clang libclang-dev llvm-dev git git-lfs cmake make m4 bison flex zlib1g-dev libc6-dev-armhf-cross;
 ```
 
 - ISPC
 
+For Linux
+
 ```
-git clone --depth 1 -b main --single-branch https://github.com/ispc/ispc.git
-cd ispc
-mkdir b
-cd b
-cmake -DISPC_NO_DUMPS=ON ..
-make -j4 install
+git clone --depth 1 -b v1.16.0 --single-branch https://github.com/ispc/ispc.git;
+cd ispc;
+mkdir b;
+cd b;
+cmake -DISPC_NO_DUMPS=ON ..;
+make -j4 install;
 ```
+
+For Android (unofficial):
+
+```
+git clone --depth 1 -b v1.16.0-modified --single-branch https://github.com/ImproveMyPhone/ispc-android64-native.git;
+cd ispc;
+mkdir b;
+cd b;
+cmake -DISPC_NO_DUMPS=ON ..;
+make -j4 install;
+```
+
+Note that `-DISPC_NO_DUMPS=ON` is a misconfiguration, but it allows it to be built with any LLVM.
+
+If your LLVM has the required feature, consider using `-DISPC_NO_DUMPS=OFF`
+
+To build for Android along with Linux, add `-DISPC_ANDROID_TARGET=ON`
 
 - TBB
 
-The version `2020_U2` is recommended until further notice. It ensures compatibility with libraries such as OpenVDB.
+There are multiple ways to go about this.
+
+1) Use of a newer version
+
+The newer version lacks reverse compatibility.
+
+Other software linked with it must be compatible with the new version.
+
+```
+git clone --depth 1 -b v2021.3.0 --single-branch https://github.com/oneapi-src/oneTBB.git;
+cd oneTBB;
+mkdir b;
+cd b;
+cmake -DTBB_TEST=OFF -DTBB_STRICT=OFF ..;
+make -j4 install;
+```
+
+2) Use of an older version such as 2020\_U2
 
 Extract its source and run make.
 
 There is no make install, copy results by
 
 ```
-cp ./build/linux_aarch64*/*so* /usr/local/lib
-cp -r ./include/* /usr/local/include
+cp ./build/linux_aarch64*/*so* /usr/local/lib;
+cp -r ./include/* /usr/local/include;
 ```
 
 or like kind.
 
-What's left is TBBConfig.cmake. For now, there's this alternative:
-
-
-```
-git clone --depth 1 -b master --single-branch https://github.com/wjakob/tbb.git
-cd tbb
-mkdir b
-cd b
-cmake ..
-make -j4 install
-```
-
-- DNNL and OIDN
+Here's an alternative unofficial way to obtain older versions:
 
 ```
-git lfs install
-git-lfs clone --depth 1 -b master --single-branch https://github.com/ImproveMyPhone/oidn-aarch64-linux.git --shallow-submodules --recursive
-cd oidn-aarch64-linux
-mkdir b
-cd b
-cmake ..
-make -j2 install
+git clone https://github.com/wjakob/tbb.git;
+cd tbb;
+mkdir b;
+cd b;
+cmake ..;
+make -j4 install;
 ```
 
-----------
+The availabiility of TBBConfig.cmake may vary.
 
-## OpenImageDenoise for AArch64 Linux is made.
+- OIDN and DNNL
 
-`--depth 1` and `--shallow-submodules` downloads only the latest version (saves data and disk space), if you intend to download older versions as well, remove these.
+```
+git lfs install;
+git lfs clone --depth 1 -b master --single-branch https://github.com/ImproveMyPhone/oidn-aarch64-linux.git --shallow-submodules --recursive;
+cd oidn-aarch64-linux;
+mkdir b;
+cd b;
+cmake ..;
+make -j2 install;
+```
+
+**Done**
+
+`--depth 1` and `--shallow-submodules` downloads only the latest version (saves data and disk space), if you intend to look at git log or download older versions as well, remove these.
 
 Specify `-DCMAKE_BUILD_TYPE=Release`, not Debug, unless you have TBB as Debug. https://github.com/oneapi-src/oneTBB/issues/207
 
-`-DISPC_NO_DUMPS=ON` is required unless LLVM is built in a certain way.
+Though `-j2` runs on only 2 CPU cores, it is not memory intensive. Compiling may require more than 6GB RAM with `-j8`. If it just stops but there is no compiler or linker error, consider it out of RAM and specify `-j1`.
 
-Though `-j2` runs on only 2 CPU cores, it is not memory intensive. Compiling may require more than 6GB RAM with `-j8`.
-
-----------
+For a static library (.a instead of .so), add `-DOIDN_STATIC_LIB=ON`
 
 ## Potential issues:
 
@@ -108,7 +147,7 @@ May be solved by updating GCC, `-fno-lifetime-dse`, or use of Clang.
 
 - Results in a black image
 
-Check compiler flags and gcc version.
+Check compiler flags and GCC version.
 
 - 100% usage in only CPU Core 0 and other cores are inactive
 
@@ -134,19 +173,38 @@ or
 
 You must use at least an ARMv8.0 CPU and a 64 bit OS
 
-- ISPC does not work!
-
-```
-git clone --depth 1 -b v1.16.0 --single-branch https://github.com/ispc/ispc.git
-```
-
 - git-lfs clone failed due to submodules
 
 Raise or omit `--depth` or `--shallow-submodules`
 
 ----------
 
+All trademarks are the property of their respective owners.
 
+mkl-dnn **itself** is no longer modified, but its version is changed.  
+See cmake/oidn\_dnnl.cmake or launch oidnDenoise for its version.  
+Weights are unmodified.  
+The project was last modified at 2021-08-01T00:00:00.000Z  
+The following files are currently modified:  
+libOpenImageDenoise.\*  
+libcommon.\*  
+CMakeLists.txt  
+README.md  
+apps/CMakeLists.txt  
+cmake/oidn\_dnnl.cmake  
+cmake/oidn\_ispc.cmake  
+common/thread.cpp  
+core/common.h  
+core/device.cpp  
+core/device.h  
+mkl-dnn (submodule version)  
+
+Changelog:  
+2021-07-04T00:00:00.000Z Initial README.md  
+2021-08-01T00:00:00.000Z Update README.md  
+End of modified part of README.md, original content below separator:  
+
+----------
 # Intel® Open Image Denoise
 
 This is release v1.4.0 of Intel Open Image Denoise. For changes and new

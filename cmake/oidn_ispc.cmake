@@ -1,5 +1,9 @@
 ## Copyright 2009-2021 Intel Corporation
 ## SPDX-License-Identifier: Apache-2.0
+## Modified by ImproveMyPhone
+## https://github.com/ImproveMyPhone/oidn-aarch64-linux
+## Changelog:
+## 2021-08-01T00:00:00.000Z Initial Android support
 
 # ISPC versions to look for, in decending order (newest first)
 set(ISPC_VERSION_WORKING "1.15.0" "1.14.1")
@@ -99,6 +103,9 @@ macro(ispc_compile)
     set(ISPC_ARCHITECTURE "aarch64")
     if(APPLE)
       set(ISPC_TARGET_OS "--target-os=ios")
+    endif()
+    if(ANDROID)
+      set(ISPC_TARGET_OS "--target-os=android")
     endif()
   endif()
 

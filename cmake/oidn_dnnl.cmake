@@ -1,13 +1,19 @@
 ## Copyright 2009-2021 Intel Corporation
 ## SPDX-License-Identifier: Apache-2.0
-## This file is modified, see
+## Modified by ImproveMyPhone
 ## https://github.com/ImproveMyPhone/oidn-aarch64-linux
-## for more details.
+## Changelog:
+## 2021-06-08T00:00:00.000Z WIP: Changed includes
+## 2021-06-09T00:00:00.000Z Changed list of DNNL sources to ones suitable for AArch64
+## 2021-06-20T00:00:00.000Z Fixed includes and changed version.
+## 2021-06-21T00:00:00.000Z Added missing DNNL sources to list.
+## 2021-07-04T00:00:00.000Z meta
+## 2021-08-01T00:00:00.000Z meta, specify DNNL commit
 
 set(DNNL_VERSION_MAJOR 2)
 set(DNNL_VERSION_MINOR 3)
 set(DNNL_VERSION_PATCH 0)
-set(DNNL_VERSION_HASH  "N/A")
+set(DNNL_VERSION_HASH  "aa13406e8a284495faaddf5396d9090a1d46f1ca")
 
 set(DNNL_CPU_RUNTIME "TBB")
 set(DNNL_CPU_THREADING_RUNTIME "TBB")

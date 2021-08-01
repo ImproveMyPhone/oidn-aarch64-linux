@@ -1,1 +1,0 @@
-Note that this copy of OpenImageDenoise and oneDNN is modified. See https://github.com/ImproveMyPhone/oidn-aarch64-linux and https://github.com/ImproveMyPhone/mkl-dnn for more details.

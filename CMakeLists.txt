@@ -1,8 +1,11 @@
 ## Copyright 2009-2021 Intel Corporation
 ## SPDX-License-Identifier: Apache-2.0
-## This file is modified, see
+## Modified by ImproveMyPhone
 ## https://github.com/ImproveMyPhone/oidn-aarch64-linux
-## for more details.
+## Changelog:
+## 2021-06-08T00:00:00.000Z Use DNNL outside MAC not BNNS
+## 2021-07-04T00:00:00.000Z meta
+## 2021-08-01T00:00:00.000Z meta
 
 cmake_minimum_required(VERSION 3.1)
 
@@ -80,6 +83,10 @@ include(oidn_package)
 
 # Platform-specific settings
 include(oidn_platform)
+
+if(ANDROID)
+  add_definitions(-DANDROID)
+endif()
 
 # Neural network runtime
 set(OIDN_NEURAL_RUNTIMES)

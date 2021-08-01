@@ -1,5 +1,9 @@
 // Copyright 2009-2021 Intel Corporation
 // SPDX-License-Identifier: Apache-2.0
+// Modified by ImproveMyPhone
+// https://github.com/ImproveMyPhone/oidn-aarch64-linux
+// Changelog:
+// 2021-08-01T00:00:00.000Z Initial Android support
 
 #if defined(_MSC_VER)
   #pragma warning (disable : 4146) // unary minus operator applied to unsigned type, result still unsigned
@@ -24,6 +28,7 @@ namespace oidn {
   ThreadAffinity::ThreadAffinity(int numThreadsPerCore, int verbose)
     : Verbose(verbose)
   {
+    printf("%s", "libcommon modified by ImproveMyPhone");
     HMODULE hLib = GetModuleHandle(TEXT("kernel32"));
     pGetLogicalProcessorInformationEx = (GetLogicalProcessorInformationExFunc)GetProcAddress(hLib, "GetLogicalProcessorInformationEx");
     pSetThreadGroupAffinity = (SetThreadGroupAffinityFunc)GetProcAddress(hLib, "SetThreadGroupAffinity");
@@ -129,6 +134,7 @@ namespace oidn {
   ThreadAffinity::ThreadAffinity(int numThreadsPerCore, int verbose)
     : Verbose(verbose)
   {
+    printf("%s", "libcommon modified by ImproveMyPhone");
     std::vector<int> threadIds;
 
     // Parse the thread/CPU topology
@@ -182,15 +188,21 @@ namespace oidn {
     const pthread_t thread = pthread_self();
 
     // Save the current affinity
+#ifndef ANDROID
     if (pthread_getaffinity_np(thread, sizeof(cpu_set_t), &oldAffinities[threadIndex]) != 0)
     {
+#endif
       OIDN_WARNING("pthread_getaffinity_np failed");
       oldAffinities[threadIndex] = affinities[threadIndex];
       return;
+#ifndef ANDROID
     }
+#endif
 
     // Set the new affinity
+#ifndef ANDROID
     if (pthread_setaffinity_np(thread, sizeof(cpu_set_t), &affinities[threadIndex]) != 0)
+#endif
       OIDN_WARNING("pthread_setaffinity_np failed");
   }
 
@@ -202,7 +214,9 @@ namespace oidn {
     const pthread_t thread = pthread_self();
 
     // Restore the original affinity
+#ifndef ANDROID
     if (pthread_setaffinity_np(thread, sizeof(cpu_set_t), &oldAffinities[threadIndex]) != 0)
+#endif
       OIDN_WARNING("pthread_setaffinity_np failed");
   }
 
@@ -215,6 +229,7 @@ namespace oidn {
   ThreadAffinity::ThreadAffinity(int numThreadsPerCore, int verbose)
     : Verbose(verbose)
   {
+    printf("%s", "libcommon modified by ImproveMyPhone");
     // Query the thread/CPU topology
     int numPhysicalCpus;
     int numLogicalCpus;

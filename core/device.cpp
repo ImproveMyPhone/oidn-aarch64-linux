@@ -1,8 +1,13 @@
 // Copyright 2009-2021 Intel Corporation
 // SPDX-License-Identifier: Apache-2.0
-// This file is modified, see
+// Modified by ImproveMyPhone
 // https://github.com/ImproveMyPhone/oidn-aarch64-linux
-// for more details.
+// Changelog:
+// 2021-06-08T00:00:00.000Z tensorBlockSize=8;
+// 2021-06-09T00:00:00.000Z Removed x86 stuff
+// 2021-07-04T00:00:00.000Z meta
+// 2021-08-01T00:00:00.000Z meta
+
 
 #include "device.h"
 #include "scratch.h"
@@ -14,6 +19,9 @@ namespace oidn {
 
   Device::Device()
   {
+    std::cout << "libOpenImageDenoise.*" << std::endl;
+    std::cout << "Modified by ImproveMyPhone" << std::endl;
+    std::cout << "Last Modified 2021-08-01" << std::endl;
 
     // Get default values from environment variables
     if (getEnvVar("OIDN_VERBOSE", verbose))
@@ -224,6 +232,8 @@ namespace oidn {
     std::cout << std::endl;
 
     std::cout << "Intel(R) Open Image Denoise " << OIDN_VERSION_STRING << std::endl;
+    std::cout << "Modified by ImproveMyPhone" << std::endl;
+    std::cout << "Last Modified 2021-08-01" << std::endl;
     std::cout << "  Compiler: " << getCompilerName() << std::endl;
     std::cout << "  Build   : " << getBuildName() << std::endl;
     std::cout << "  Platform: " << getPlatformName() << std::endl;

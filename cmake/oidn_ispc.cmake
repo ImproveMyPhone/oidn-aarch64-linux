@@ -5,8 +5,8 @@
 ## Changelog:
 ## 2021-08-01T00:00:00.000Z Initial Android support
 
-# ISPC versions to look for, in decending order (newest first)
-set(ISPC_VERSION_WORKING "1.15.0" "1.14.1")
+# ISPC versions to look for, in descending order (newest first)
+set(ISPC_VERSION_WORKING "1.16.0" "1.15.0" "1.14.1")
 list(GET ISPC_VERSION_WORKING -1 ISPC_VERSION_REQUIRED)
 
 if(NOT ISPC_EXECUTABLE)
@@ -101,7 +101,7 @@ macro(ispc_compile)
     set(ISPC_ARCHITECTURE "x86-64")
   elseif(OIDN_ARCH STREQUAL "ARM64")
     set(ISPC_ARCHITECTURE "aarch64")
-    if(APPLE)
+    if(APPLE AND ISPC_VERSION VERSION_LESS "1.16.0")
       set(ISPC_TARGET_OS "--target-os=ios")
     endif()
     if(ANDROID)
